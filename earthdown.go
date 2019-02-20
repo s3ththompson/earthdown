@@ -13,15 +13,15 @@ import (
 )
 
 type EarthViewItem struct {
-    Id string `json:"id"`
-    Slug string `json:"slug"`
-    Title string `json:"title"`
-    Lat string `json:"lat"`
-    Lng string `json:"lng"`
-    PhotoURL string `json:"photoUrl"`
-    Attribution string `json:"attribution"`
-    MapsLink string `json:"mapsLink"`
-    EarthLink string `json:"earthLink"`
+	Id          string `json:"id"`
+	Slug        string `json:"slug"`
+	Title       string `json:"title"`
+	Lat         string `json:"lat"`
+	Lng         string `json:"lng"`
+	PhotoURL    string `json:"photoUrl"`
+	Attribution string `json:"attribution"`
+	MapsLink    string `json:"mapsLink"`
+	EarthLink   string `json:"earthLink"`
 }
 
 const Usage = `Usage: earth [options...] EARTH_VIEW_URL
@@ -48,7 +48,7 @@ func main() {
 
 	if earthURL == "" {
 		fmt.Fprintln(os.Stderr, Usage)
-		return		
+		return
 	}
 
 	resp, err := http.Get(earthURL)
@@ -59,12 +59,12 @@ func main() {
 
 	expandedURL := resp.Request.URL.String()
 	apiURL, err := url.ParseRequestURI(expandedURL)
-	if err != nil || apiURL.Host != "earthview.withgoogle.com"  {
+	if err != nil || apiURL.Host != "earthview.withgoogle.com" {
 		fmt.Fprintln(os.Stderr, "error resolving url, expecting host earthview.withgoogle.com")
 		return
 	}
 
-	apiURL.Path = path.Join("_api", apiURL.Path + ".json")
+	apiURL.Path = path.Join("_api", apiURL.Path+".json")
 	resp, err = http.Get(apiURL.String())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error requesting api, ", apiURL.String())
