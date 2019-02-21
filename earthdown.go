@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"os"
 	"path"
+
+	"github.com/wzshiming/ctc"
 )
 
 type EarthViewItem struct {
@@ -47,65 +49,77 @@ func main() {
 	output := *o
 
 	if earthURL == "" {
-		fmt.Fprintln(os.Stderr, Usage)
+		fmt.Fprint(os.Stderr, Usage)
 		return
 	}
 
 	resp, err := http.Get(earthURL)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error requesting url, ", earthURL)
+		printError("error requesting url, ", earthURL)
 		return
 	}
 
 	expandedURL := resp.Request.URL.String()
 	apiURL, err := url.ParseRequestURI(expandedURL)
 	if err != nil || apiURL.Host != "earthview.withgoogle.com" {
-		fmt.Fprintln(os.Stderr, "error resolving url, expecting host earthview.withgoogle.com")
+		printError("error resolving url, expecting host earthview.withgoogle.com")
 		return
 	}
 
 	apiURL.Path = path.Join("_api", apiURL.Path+".json")
 	resp, err = http.Get(apiURL.String())
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error requesting api, ", apiURL.String())
+		printError("error requesting api, ", apiURL.String())
 		return
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error reading api request body")
+		printError("error reading api request body")
 		return
 	}
 
 	var item EarthViewItem
 	err = json.Unmarshal(body, &item)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error decoding json")
+		printError("error decoding json")
+		return
 	}
+	fmt.Print(ctc.ForegroundGreen, item.Title, ctc.Reset, "\n")
+	fmt.Print("Lat: ", ctc.ForegroundBlue, item.Lat, ctc.Reset, ", Lng: ", ctc.ForegroundBlue, item.Lng, ctc.Reset, ", ", item.Attribution, "\n")
 
 	if output == "" {
 		output = item.Slug + ".jpg"
 	}
 	out, err := os.Create(output)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error writing output, ", output)
+		printError("error writing output, ", output)
+		return
 	}
 	defer out.Close()
 
 	resp, err = http.Get(item.PhotoURL)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error downloading file, ", item.PhotoURL)
+		printError("error downloading file, ", item.PhotoURL)
+		return
 	}
 	defer resp.Body.Close()
 
 	n, err := io.Copy(out, resp.Body)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error downloading file, ", item.PhotoURL)
+		printError("error downloading file, ", item.PhotoURL)
+		return
 	}
-	fmt.Println(item.Title)
-	fmt.Printf("Lat: %s, Lng: %s, %s\n", item.Lat, item.Lng, item.Attribution)
-	fmt.Printf("Downloaded %s to %s (1 file, %s)\n", item.PhotoURL, output, byteCountDecimal(n))
+	fmt.Print("Downloaded ", ctc.ForegroundBlue, item.PhotoURL, ctc.Reset, " to ", ctc.ForegroundBlue, output, ctc.ForegroundYellow, " (1 file, ", byteCountDecimal(n), ")", ctc.Reset, "\n")
+}
+
+func printError(a ...interface{}) {
+	var message []interface{}
+	message = append(message, ctc.ForegroundRed)
+	message = append(message, a...)
+	message = append(message, ctc.Reset, "\n")
+	fmt.Fprint(os.Stderr, message...)
 }
 
 // programming.guide/go/formatting-byte-size-to-human-readable-format.html

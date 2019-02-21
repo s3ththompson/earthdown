@@ -7,7 +7,7 @@ Simple CLI to download images from [Google Earth View](https://chrome.google.com
 ### Installation
 
 ```
-$ go get github.com/s3ththompson/earthdown
+$ go get -u github.com/s3ththompson/earthdown
 ```
 
 ### Usage
