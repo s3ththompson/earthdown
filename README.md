@@ -2,7 +2,7 @@
 
 ## Earthdown 
 
-Simple CLI to download images from [Google Earth View](https://chrome.google.com/webstore/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh?hl=en).
+Simple CLI to download images from [Google Earth View](https://earthview.withgoogle.com/).
 
 ### Installation
 
