@@ -18,6 +18,8 @@ type EarthViewItem struct {
 	Id          string `json:"id"`
 	Slug        string `json:"slug"`
 	Title       string `json:"title"`
+	Region      string `json:"region"`
+	Country     string `json:"country"`
 	Lat         string `json:"lat"`
 	Lng         string `json:"lng"`
 	PhotoURL    string `json:"photoUrl"`
@@ -86,8 +88,9 @@ func main() {
 		printError("error decoding json")
 		return
 	}
-	fmt.Print(ctc.ForegroundGreen, item.Title, ctc.Reset, "\n")
-	fmt.Print("Lat: ", ctc.ForegroundBlue, item.Lat, ctc.Reset, ", Lng: ", ctc.ForegroundBlue, item.Lng, ctc.Reset, ", ", item.Attribution, "\n")
+	fmt.Print(ctc.ForegroundGreen, item.Region, ", ", item.Country, ctc.Reset, "\n")
+	fmt.Print("Lat: ", ctc.ForegroundBlue, item.Lat, "°", ctc.Reset, ", Lng: ", ctc.ForegroundBlue, item.Lng, "°", ctc.Reset, ", ", item.Attribution, "\n")
+	fmt.Print("Link: ", ctc.ForegroundBlue, item.EarthLink, ctc.Reset, "\n")
 
 	if output == "" {
 		output = item.Slug + ".jpg"
