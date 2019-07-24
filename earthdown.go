@@ -20,8 +20,8 @@ type EarthViewItem struct {
 	Title       string `json:"title"`
 	Region      string `json:"region"`
 	Country     string `json:"country"`
-	Lat         string `json:"lat"`
-	Lng         string `json:"lng"`
+	Lat         float64 `json:"lat"`
+	Lng         float64 `json:"lng"`
 	PhotoURL    string `json:"photoUrl"`
 	Attribution string `json:"attribution"`
 	MapsLink    string `json:"mapsLink"`
